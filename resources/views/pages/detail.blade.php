@@ -21,7 +21,11 @@
                 @endguest
                 @auth
                 <form id="add-to-cart" action="">
-                    <button id="add-to-cart-button" data-id="{{ $product->id }}" class="detail__cart" type="submit">Добавить в корзину</button>
+                    @if($product->quantity < 1)
+                        <p>Данного товара нет в наличии</p>
+                    @else
+                        <button id="add-to-cart-button" data-id="{{ $product->id }}" class="detail__cart" type="submit">Добавить в корзину</button>
+                    @endif
                 </form>
                 @endauth
             </div>

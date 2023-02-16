@@ -9,21 +9,33 @@ class AdminController extends Controller
 {
     public function createProduct(Request $request)
     {
-        $imgName = time() . $request->img;
-        $img = $request->img->move(public_path('img/') . $imgName);
+        $data = $request->validate([
+			'name' => 'required|string',
+			'img' => 'required|image|mimes:png,jpeg,jpg,svg',
+			'description' => 'required|string',
+			'model' => 'required',
+			'country' => 'required',
+			'year' => 'required',
+			'price' => 'required',
+			'quantity' => 'required',
+			'category_id' => 'required',
+		]);
+
+        $imgName = time() . '-' . $request->img->getClientOriginalName();
+        $request->img->move(public_path('img'), $imgName);
 
         Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
+            'name' => $data['name'],
             'img' => $imgName,
-            'country' => $request->country,
-            'model' => $request->model,
-            'year' => $request->year,
-            'quantity' => $request->quantity,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
+            'description' => $data['description'],
+            'model' => $data['model'],
+            'country' => $data['country'],
+            'year' => $data['year'],
+            'price' => $data['price'],
+            'quantity' => $data['quantity'],
+            'category_id' => $data['category_id'],
         ]);
 
-        return redirect()->route('index');
+        return redirect()->route('main');
     }
 }

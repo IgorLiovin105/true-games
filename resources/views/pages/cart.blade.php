@@ -6,20 +6,23 @@
 @section('content')
     <section class="cart">
         <div class="cart__content">
-            <button class="cart__repair" type="submit">Оформить заказ на {{ $finalPrice }}₽</button>
-            @foreach ($cartItems as $item)
+            <button class="cart__repair" type="submit">Оформить заказ на {{ $price }}₽</button>
+            @forelse ($cartItems as $item)
                 <div class="cart__item">
                     <img src="{{ asset('img/' . $item->product->img) }}" alt="">
                     <h2>{{ $item->product->name }}</h2>
-                    <p>{{ $item->product->price }}₽</p>
-                    <div class="cart__buttons">
-                        <form id="deleteFromCart">
-                            @csrf
-                            <button class="cart__delete" type="submit" data-id="{{ $item->product->id }}">Удалить товар</button>
-                        </form>
+                    <div class="cart__quantity">
+                        <a href="{{ route('changeQuantity', ['id' => $item->id, 'method' => 'incr']) }}">+</a>
+                        <p>{{ $item->quantity }}</p>
+                        <a href="{{ route('changeQuantity', ['id' => $item->id, 'method' => 'decr']) }}">-</a>
                     </div>
+                    <p>{{ $item->product->price }}₽</p>
+                    <p>total: {{ $item->summary_price }}₽</p>
+                    <a href="{{ route('deleteFromCart', $item->id) }}" class="cart__delete">Удалить товар</a>
                 </div>
-            @endforeach
+            @empty
+                <h1 class="cart__empty">В корзине нет товаров</h1>
+            @endforelse
         </div>
     </section>
 @endsection

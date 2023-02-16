@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->unsigned();
             $table->foreignId('user_id')->unsigned();
+            $table->integer('quantity')->default(1);
+            $table->decimal('summary_price');
             $table->timestamps();
         });
     }

@@ -18,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/cart', [CatalogController::class, 'cart'])->name('cart');
     Route::post('/add-to-cart', [CatalogController::class, 'addToCart'])->name('addToCart');
+    Route::get('/change-quantity/{id}/{method}', [CatalogController::class, 'changeQuantity'])->name('changeQuantity');
+    Route::get('/delete-from-cart/{id}', [CatalogController::class, 'deleteFromCart'])->name('deleteFromCart');
 });
 Route::middleware(['admin'])->group(function () {
     Route::view('/admin/create-product', 'admin.create-product')->name('createProductPage');

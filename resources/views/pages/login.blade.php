@@ -11,5 +11,6 @@
         @error('password')<p class="error">Пароль набран неправильно</p>@enderror
         @csrf
         <button type="submit">Войти</button>
+        <a class="form__redirect" href="{{ route('register') }}">Ещё нет аккаунта?</a>
     </form>
 @endsection

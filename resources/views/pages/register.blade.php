@@ -24,5 +24,6 @@
         @error('rules')<p class="error">Нужно согласиться на обработку персональных данных</p>@enderror
         @csrf
         <button type="submit">Зарегистрироваться</button>
+        <a class="form__redirect" href="{{ route('login') }}">Уже есть аккаунт?</a>
     </form>
 @endsection

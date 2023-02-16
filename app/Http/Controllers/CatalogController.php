@@ -26,31 +26,69 @@ class CatalogController extends Controller
     public function cart()
     {
         $cartItems = Cart::where('user_id', auth()->user()->id)->get();
-        $finalPrice = 0;
-        foreach($cartItems as $item) {
-            $finalPrice += $item->product->price;
-        }
-        return view('pages.cart', compact(['cartItems', 'finalPrice']));
+        $price = $cartItems->sum('summary_price');
+        return view('pages.cart', compact(['cartItems', 'price']));
     }
 
     // Add to cart method
     public function addToCart(Request $request)
     {
-        if(Cart::where('user_id', auth()->user()->id)->where('product_id', $request->id)->count() > 0) {
-            return response()->json(['message' => 'Данный товар уже был добавлен в коризну', 'status' => 405]);
+        $product = Product::find($request->id);
+        if($product->quantity < 1) {
+            return response()->json(['message' => 'Вы не можете добавить данный товар в коризну, так как его нет в наличии'], 200);
+        }
+        if($cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $product->id)->first()) {
+            $cart->quantity++;
+            $cart->summary_price = $cart->quantity * $product->price;
+            $cart->save();
+        }
+        else {
+            Cart::create([
+                'user_id' => auth()->user()->id,
+                'product_id' => $request->id,
+                'summary_price' => Product::find($request->id)->price,
+                'quantity' => 1
+            ]);
         }
 
-        Cart::create([
-            'user_id' => auth()->user()->id,
-            'product_id' => $request->id
-        ]);
-
-        $product = Product::find($request->id);
         $product->quantity--;
         $product->save();
 
-        $cart = cart::where('user_id', auth()->user()->id)->count();
+        $cartCount = Cart::where('user_id', auth()->user()->id)->count();
 
-        return response()->json(['message' => 'Товар добавлен в коризну', 'productQuantity' => $product->quantity, 'cartQuantity' => $cart], 200);
+        return response()->json(['message' => 'Товар добавлен в коризну', 'productQuantity' => $product->quantity, 'cartQuantity' => $cartCount], 200);
+    }
+
+    // Change quantity method
+    public function changeQuantity($id, $method)
+    {
+        $cart = Cart::find($id);
+        if($method == 'incr' && $cart->product->quantity > 0) {
+            $cart->quantity++;
+            $cart->product->quantity--;
+            $cart->summary_price = $cart->product->price * $cart->quantity;
+            $cart->product->save();
+            $cart->save();
+            return back();
+        }
+
+        if($cart->quantity > 0) {
+            $cart->quantity--;
+            $cart->product->quantity++;
+            $cart->summary_price = $cart->product->price * $cart->quantity;
+            $cart->product->save();
+            $cart->save();
+        }
+        return back();
+    }
+
+    // Delete from cart
+    public function deleteFromCart($id)
+    {
+        $cart = Cart::find($id);
+        $cart->product->quantity += $cart->quantity;
+        $cart->product->save();
+        Cart::destroy($id);
+        return back();
     }
 }
