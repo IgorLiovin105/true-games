@@ -13,6 +13,7 @@
                 <p class="detail__setting">Модель - {{ $product->model }}</p>
                 <p class="detail__setting">Страна производства - {{ $product->country }}</p>
                 <p class="detail__setting">Год производства - {{ $product->year }}</p>
+                <p class="detail__setting">Категория -  <a href="{{ route('category', $product->category->id) }}">{{ $product->category->name }}</a></p>
                 <p class="detail__setting">Цена - {{ $product->price }}₽</p>
                 <p class="detail__setting">Количество - <span id="product-quantity">{{ $product->quantity }}</span></p>
                 <p id="response" style="display: none"></p>

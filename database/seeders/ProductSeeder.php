@@ -23,7 +23,7 @@ class ProductSeeder extends Seeder
             'country' => 'USA',
             'year' => 2021,
             'price' => 1999.00,
-            'quantity' => rand(1, 100),
+            'quantity' => 3,
             'category_id' => 1
         ]);
         Product::create([

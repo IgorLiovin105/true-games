@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use App\Models\Repair;
 
 class AuthController extends Controller
 {
@@ -48,5 +49,12 @@ class AuthController extends Controller
     {
         auth('web')->logout();
         return redirect()->route('main');
+    }
+
+    // Profile page
+    public function profilePage()
+    {
+        $repairs = Repair::where('user_id', auth()->user()->id)->where('status', 'Новый')->get();
+        return view('pages.profile', compact('repairs'));
     }
 }

@@ -6,7 +6,9 @@
 @section('content')
     <section class="cart">
         <div class="cart__content">
-            <button class="cart__repair" type="submit">Оформить заказ на {{ $price }}₽</button>
+            @if($price > 0)
+                <a href="{{ route('userCheck') }}" class="cart__repair" type="submit">Оформить заказ на {{ $price }}₽</a>
+            @endif
             @forelse ($cartItems as $item)
                 <div class="cart__item">
                     <img src="{{ asset('img/' . $item->product->img) }}" alt="">

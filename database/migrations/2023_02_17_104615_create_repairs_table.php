@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('repairs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->unsigned();
-            $table->foreignId('user_id')->unsigned();
-            $table->foreignId('repair_id')->nullable();
-            $table->integer('quantity')->default(1);
-            $table->decimal('summary_price');
-            $table->string('status')->default('added');
+            $table->foreignId('user_id');
+            $table->string('status')->nullable()->default('Новый');
+            $table->decimal('price');
+            $table->string('reason')->nullable();
+            $table->boolean('is_canceled')->default(false);
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('repairs');
     }
 };

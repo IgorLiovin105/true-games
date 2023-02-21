@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Repair;
 use App\Models\Product;
+use App\Models\Category;
+use Egulias\EmailValidator\Result\Reason\Reason;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    public function createProductPage()
+    {
+        $categories = Category::all();
+        return view('admin.create-product', compact('categories'));
+    }
+
     public function createProduct(Request $request)
     {
         $data = $request->validate([
@@ -37,5 +46,32 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('main');
+    }
+
+    public function deleteProduct($id)
+    {
+        Product::destroy($id);
+        return redirect()->route('main');
+    }
+
+    // Repairs in canceling page
+    public function repairsPage()
+    {
+        $repairs = Repair::all();
+        return view('admin.repairs', compact('repairs'));
+    }
+
+    // Cancel repair page
+    public function cancelRepairPage($id)
+    {
+        $repair = Repair::find($id);
+        return view('admin.cancel-repair', compact('repair'));
+    }
+
+    // Cancel repair method
+    public function cancelRepair(Request $request)
+    {
+        Repair::where('id', $request->id)->update(['status' => 'Отменён', 'reason' => $request->reason, 'is_canceled' => true]);
+        return redirect()->route('repairsPage');
     }
 }
